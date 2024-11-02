@@ -11,6 +11,9 @@ const slides = [
   { title: "Web Development", description: "Learn modern web development with hands-on workshops", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#4285F4" },
   { title: "Cloud Computing", description: "Master cloud technologies with Google Cloud Platform", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#0F9D58" },
   { title: "Machine Learning", description: "Explore AI and ML with TensorFlow and Python", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#F4B400" },
+  { title: "Machine Learning", description: "Explore AI and ML with TensorFlow and Python", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#F4B400" },
+  { title: "Machine Learning", description: "Explore AI and ML with TensorFlow and Python", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#F4B400" },
+  { title: "Machine Learning", description: "Explore AI and ML with TensorFlow and Python", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#F4B400" },
   { title: "Mobile Development", description: "Build Android apps with Kotlin and Jetpack Compose", image: "https://res.cloudinary.com/junaidshaukat/image/upload/v1730516913/dt02x4oh8uq4ajgfvtvw.jpg", color: "#DB4437" }
 ];
 
@@ -46,8 +49,6 @@ export default function GDSCSlider() {
 
   return (
     <section className="py-10 relative overflow-hidden">
-        
-      <div className="absolute inset-0 bg-gray-50 opacity-90"></div>
 
       {/* Animated background elements */}
       {randomValues.map((style, i) => (
@@ -77,12 +78,12 @@ export default function GDSCSlider() {
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-center mb-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center relative"> <CalendarClock size={40} className="font-extrabold mt-2 mr-2" /> Upcoming Events </h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center relative"> <CalendarClock size={40} className="font-extrabold mt-2 mb-4 mr-2" /> Upcoming Events </h2>
         </motion.div>
 
         <div className="flex items-center justify-center">
           <motion.div
-            className="absolute left-32 z-20 cursor-pointer w-10 h-10 md:w-12 md:h-12"
+            className="absolute mb-2 left-0 md:left-52 z-20 cursor-pointer w-10 h-10 md:w-12 md:h-12"
             whileHover={{ scale: 1.1, filter: "brightness(1.2)", transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.9 }}
             onClick={() => paginate(-1)}
@@ -140,7 +141,7 @@ export default function GDSCSlider() {
           </div>
 
           <motion.div
-            className="absolute right-32 z-20 cursor-pointer w-10 h-10 md:w-12 md:h-12"
+            className="absolute right-0 md:right-52  z-20 cursor-pointer w-10 h-10 md:w-12 md:h-12"
             whileHover={{ scale: 1.1, filter: "brightness(1.2)", transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.9 }}
             onClick={() => paginate(1)}

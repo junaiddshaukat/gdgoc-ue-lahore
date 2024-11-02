@@ -39,6 +39,7 @@ export default function Navbar() {
             <span className="text-xl font-bold text-gray-800">
               GDGoC UE Lahore
             </span>
+            
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/gdsc-fr-L2Ks6DEVw8cZMlcPVcHhjHBUyPpzMF.webp"
               alt="GDG Logo Right"
@@ -47,7 +48,8 @@ export default function Navbar() {
               className="w-6 h-6"
             />
           </Link>
-
+          
+        
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
@@ -75,7 +77,7 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-
+     
       {/* Mobile menu */}
       <div
         className={`md:hidden absolute w-full bg-white border-b transform ${
@@ -100,6 +102,7 @@ export default function Navbar() {
           Join Now
         </a>
       </div>
+     
     </nav>
   )
 }
