@@ -94,16 +94,6 @@ function App() {
     }
   };
 
-  const handleFileInputChange = (e, type) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      if (type === 'member') {
-        setNewMember({ ...newMember, image: file });
-      } else {
-        setNewEvent({ ...newEvent, image: file });
-      }
-    }
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -137,7 +127,7 @@ function App() {
             handleDragOver={handleDragOver}
             handleDragLeave={handleDragLeave}
             handleDrop={handleDrop}
-            handleFileInputChange={handleFileInputChange}
+   
             isDragging={isDragging}
             googleColors={googleColors}
           />
@@ -151,7 +141,7 @@ function App() {
             handleDragOver={handleDragOver}
             handleDragLeave={handleDragLeave}
             handleDrop={handleDrop}
-            handleFileInputChange={handleFileInputChange}
+
             isDragging={isDragging}
             googleColors={googleColors}
           />

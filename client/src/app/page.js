@@ -24,6 +24,7 @@ export default function Home() {
       <div id="About">
         <AboutSection />
       </div>
+      
       <Footer/>
    
     </>

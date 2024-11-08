@@ -7,41 +7,38 @@ import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import axios from "axios";
 import { CalendarClock } from "lucide-react";
+import Link from 'next/link';
 
 export default function GDSCSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [randomValues, setRandomValues] = useState([]);
   const [slides, setSlides] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Google's theme colors
   const googleColors = ['#4285F4', '#34A853', '#FBBC05', '#EA4335'];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const fetchEvents = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get("http://localhost:3001/upcomingevent/getallevent", {
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
+      setSlides(response.data.Events);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
       setIsLoading(false);
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/upcomingevent/getallevent", {
-          headers: {
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-            Expires: "0",
-          },
-        });
-        setSlides(response.data.Events);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
     fetchEvents();
   }, []);
 
@@ -72,7 +69,26 @@ export default function GDSCSlider() {
     setCurrentIndex((prevIndex) => (prevIndex + newDirection + slides.length) % slides.length);
   };
 
-  if (isLoading) {
+  const handleDeleteEvent = async (eventId) => {
+    setIsDeleting(true);
+    try {
+      await axios.delete(`http://localhost:3001/upcomingevent/deletevent/${eventId}`, {
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
+      const updatedSlides = slides.filter(slide => slide._id !== eventId);
+      setSlides(updatedSlides);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (isLoading || isDeleting) {
     return (
       <div className="flex justify-center items-center h-96">
         <div className="relative w-16 h-16">
@@ -86,7 +102,7 @@ export default function GDSCSlider() {
               }}
               animate={{ rotate: [0, 360] }}
               transition={{
-                duration: 0.8, // Increased speed
+                duration: 0.8,
                 repeat: Infinity,
                 ease: "linear",
                 delay: index * 0.2
@@ -211,15 +227,18 @@ export default function GDSCSlider() {
                       <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="text-sm sm:text-base text-gray-200">
                         {slides[currentIndex].description}
                       </motion.p>
-                      <motion.button 
-                        initial={{ opacity: 0 }} 
-                        animate={{ opacity: 1 }} 
-                        transition={{ delay: 0.2 }} 
-                        className="mt-3 px-4 py-1.5 bg-white text-gray-900 rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-300"
-                        aria-label={`Learn more about ${slides[currentIndex].title}`}
-                      >
-                        Learn More
-                      </motion.button>
+                      <Link href={`${slides[currentIndex].mainpaage_url}`}>
+                        <motion.button 
+                          initial={{ opacity: 0 }} 
+                          animate={{ opacity: 1 }} 
+                          transition={{ delay: 0.2 }} 
+                          className="mt-3 px-4 py-1.5 bg-white text-gray-900 rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-300"
+                          aria-label={`Learn more about ${slides[currentIndex].title}`}
+                        >
+                          Learn More
+                        </motion.button>
+                      </Link>
+                     
                     </div>
                   </CardContent>
                 </Card>

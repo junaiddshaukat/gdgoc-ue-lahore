@@ -5,13 +5,16 @@ import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "./firebase";
+
 import axios from 'axios';
 
 const EventManagement = ({
   handleDragOver,
   handleDragLeave,
   handleDrop,
-  handleFileInputChange,
+
   isDragging,
   googleColors = {
     blue: '#4285F4',
@@ -29,6 +32,31 @@ const EventManagement = ({
   });
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+
+
+  const uploadImageToFirebase = async (file) => {
+    if (!file) return null;
+
+    const imageRef = ref(storage, `upcomingevent/${file.name}`);
+    try {
+      const snapshot = await uploadBytes(imageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+      return url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
+    }
+  };
+
+
+  const handleFileInputChange = (e, type) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setNewEvent({ ...newEvent, image: file });
+    }
+  };
+
 
   useEffect(() => {
     fetchEvents();
@@ -72,23 +100,12 @@ const EventManagement = ({
     }
   };
 
-  const addEvent = () => {
+  const addEvent = async() => {
     if (newEvent.image) {
-      setEvents([
-        ...events,
-        {
-          ...newEvent,
-          id: Date.now().toString(),
-          image: URL.createObjectURL(newEvent.image)
-        }
-      ]);
-      setNewEvent({
-        title: '',
-        description: '',
-        image: null,
-        color: googleColors?.blue || '#4285F4',
-        mainpage_url: ''
-      });
+    const url=await  uploadImageToFirebase(newEvent.image)
+    setNewEvent({...newEvent,image:url})
+    console.log(newEvent)
+     
     }
   };
 
