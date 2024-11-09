@@ -23,7 +23,7 @@ export default function GDSCSlider() {
   const fetchEvents = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://localhost:3001/upcomingevent/getallevent", {
+      const response = await axios.get("http://localhost:3001/upcomingevent/getupcomingevents", {
         headers: {
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
@@ -227,7 +227,7 @@ export default function GDSCSlider() {
                       <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="text-sm sm:text-base text-gray-200">
                         {slides[currentIndex].description}
                       </motion.p>
-                      <Link href={`${slides[currentIndex].mainpaage_url}`}>
+                      <Link href={`${slides[currentIndex].mainpage_url}`}>
                         <motion.button 
                           initial={{ opacity: 0 }} 
                           animate={{ opacity: 1 }} 

@@ -39,7 +39,25 @@ export const getallevent=async (req, res) => {
       });
     }
   };
-
+  export const upcoming = async (req, res) => {
+    try {
+      // Fetch events where type is "upcoming"
+      const events = await Upcoming_eventmodel.find({ type: "upcoming" });
+  
+      res.status(200).json({
+        message: "Upcoming events retrieved successfully",
+        Events: events,
+      });
+    } catch (error) {
+      // Handle any errors during the process
+      console.error("Error fetching events:", error);
+      res.status(500).json({
+        message: "Error fetching events",
+        error: error.message,
+      });
+    }
+  };
+  
   export const deletevent = async (req, res) => {
     try {
       const { id } = req.params; 
@@ -54,5 +72,27 @@ export const getallevent=async (req, res) => {
       res.status(200).json({ message: "Event deleted successfully", Event: deletedevent });
     } catch (error) {
       res.status(500).json({ message: "Error deleting Event", error });
+    }
+  };
+
+
+  export const updateevent =async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      
+      const deletedevent = await Upcoming_eventmodel.findOneAndUpdate(
+        { _id: id }, // Assuming the document is identified by _id
+        req.body,
+        { new: true }
+      );
+  
+      if (!deletedevent) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+  
+      res.status(200).json({ message: "Event Edit successfully", Event: deletedevent });
+    } catch (error) {
+      res.status(500).json({ message: "Error Edit Event", error });
     }
   };

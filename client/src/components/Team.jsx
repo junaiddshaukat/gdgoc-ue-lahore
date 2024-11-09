@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -35,17 +35,17 @@ const TeamMember = ({ member }) => {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: member.level * 0.1 }}
-      className="relative text-center w-full sm:w-48 mb-8 sm:mb-0"
+      className="relative text-center w-full sm:w-64 mb-8 sm:mb-0"
     >
       <motion.div
         whileHover={{ scale: 1.2 }}
         transition={{ type: "spring", stiffness: 300, damping: 10 }}
-        className="relative overflow-hidden rounded-full w-32 h-32 mx-auto border-4"
+        className="relative overflow-hidden rounded-full w-44 h-44 mx-auto border-4"
         style={{ borderColor: themeColor }}
       >
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
-            <User className="w-16 h-16 text-gray-400" />
+            <User className="w-24 h-24 text-gray-400" />
           </div>
         ) : (
           <Image
@@ -57,7 +57,7 @@ const TeamMember = ({ member }) => {
           />
         )}
       </motion.div>
-      <h3 className="mt-4 text-lg font-semibold" style={{ color: themeColor }}>{member.name}</h3>
+      <h3 className="mt-4 text-xl font-semibold" style={{ color: themeColor }}>{member.name}</h3>
       <p className="mt-1 text-sm font-medium" style={{ color: themeColor }}>{member.position}</p>
       <div className="flex justify-center mt-2 space-x-2">
         <Button variant="ghost" size="icon" asChild>
@@ -116,18 +116,17 @@ const DynamicAnimatedBackground = dynamic(() => Promise.resolve(AnimatedBackgrou
 const TeamStructure = ({ teamStructure }) => {
   return (
     <div className="relative z-10 flex flex-col items-center space-y-16 max-w-7xl mx-auto">
-    {[1, 2, 3, 4].map(level => (
-  <div key={level} className="w-full">
-    <div className="flex flex-wrap justify-center gap-8">
-      {teamStructure
-        .filter(member => member.level === level)
-        .map((member, index) => (
-          <TeamMember key={member._id || `${level}-${index}`} member={member} />
-        ))}
-    </div>
-  </div>
-))}
-
+      {[1, 2, 3, 4].map(level => (
+        <div key={level} className="w-full">
+          <div className="flex flex-wrap justify-center gap-8">
+            {teamStructure
+              .filter(member => member.level === level)
+              .map((member, index) => (
+                <TeamMember key={member._id || `${level}-${index}`} member={member} />
+              ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -148,8 +147,6 @@ export default function Component() {
     { id: 11, name: 'Asad Ullah', position: 'Design Lead', image: 'https://avatar.iran.liara.run/public', linkedin: 'https://linkedin.com', github: 'https://github.com', level: 4 },
     { id: 12, name: 'Hadia Amjad', position: 'Content Lead', image: 'https://avatar.iran.liara.run/public', linkedin: 'https://linkedin.com', github: 'https://github.com', level: 4 },
     { id: 13, name: 'Saleha Eman', position: 'Social Media Lead', image: 'https://avatar.iran.liara.run/public', linkedin: 'https://linkedin.com', github: 'https://github.com', level: 4 },
-    { id: 14, name: 'Hadia Amjad', position: 'Content Lead', image: 'https://avatar.iran.liara.run/public', linkedin: 'https://linkedin.com', github: 'https://github.com', level: 4 },
-    { id: 15, name: 'Saleha Eman', position: 'Social Media Lead', image: 'https://avatar.iran.liara.run/public', linkedin: 'https://linkedin.com', github: 'https://github.com', level: 4 },
   ])
 
   useEffect(() => {
@@ -167,7 +164,6 @@ export default function Component() {
           },
         });
         setTeamStructure(response.data.Team);
-     
       } catch (error) {
         console.error("Error fetching Team:", error);
       }

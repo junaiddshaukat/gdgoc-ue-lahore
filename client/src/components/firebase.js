@@ -4,13 +4,13 @@ import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDGDWmQgyIVkvpN9a1cxCHmcb0CKRDoUzM",
-    authDomain: "gdgoc-ue.firebaseapp.com",
-    projectId: "gdgoc-ue",
-    storageBucket: "gdgoc-ue.appspot.com", // Change this line
-    messagingSenderId: "928788036815",
-    appId: "1:928788036815:web:d43a4ce841f3274b624bba",
-    measurementId: "G-EDHQVFF4DF"
+  apiKey: "AIzaSyBVVqHX4XvoCZWEDYFE4KtklaUR_XPKDm0",
+  authDomain: "ue-book-club.firebaseapp.com",
+  projectId: "ue-book-club",
+  storageBucket: "ue-book-club.appspot.com",
+  messagingSenderId: "637451155361",
+  appId: "1:637451155361:web:bac279a3b85ad093a0bde0",
+  measurementId: "G-HLQWHQY4J5"
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

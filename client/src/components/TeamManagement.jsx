@@ -5,23 +5,101 @@ import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import axios from 'axios';
+import { storage } from "./firebase";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 
 const TeamManagement = ({ 
-  newMember, 
-  addTeamMember, 
+ 
   handleDragOver,
   handleDragLeave,
   handleDrop,
-  handleFileInputChange,
+
   isDragging,
   googleColors 
 }) => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState({ visible: false, message: '', success: false });
+
+    
+  const [newMember, setNewMember] = useState({
+    name: '',
+    position: '',
+    image: null,
+    linkedin: '',
+    github: '',
+    level: 1
+  });
+  const uploadImageToFirebase = async (file) => {
+    if (!file) return null;
+
+    const imageRef = ref(storage, `teammember/${file.name}`);
+    try {
+      const snapshot = await uploadBytes(imageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+      return url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setNotification({ visible: true, message: 'Image upload failed.', success: false });
+      return null;
+    }
+  };
+
+
+  const handleFileInputChange = (e, type) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setNewMember({ ...newMember, image: file });
+
+    }
+    
+  };
+  
+ const putdata=async(data)=>{
+
+  try {
+    const response = await axios.post('http://localhost:3001/team/createmember', data);
+    console.log(response.data)
+    setNotification({ visible: true, message: 'Member created successfully', success: true })
+   fetchTeam();
+  
+
+  //  setNotification({ visible: true, message: 'Event created successfully!', success: true }); // Show success notification
+  } catch (error) {
+    console.error("Error adding Memeber:", error);
+    setNotification({ visible: true, message: 'Something went wrong', success: false })
+    //setNotification({ visible: true, message: 'Failed to create book due to an error.', success: false }); // Show error notification
+  }
+};
+
+
+  const addTeamMember = async() => {
+  if(newMember.image){
+    const urls=await  uploadImageToFirebase(newMember.image)
+    let newmember={}
+     setNewMember((pre)=>{
+      newmember={...pre,image:urls}
+      return newmember;
+     })
+
+     putdata(newmember)
+     setNewMember({
+      name: '',
+      position: '',
+      image: null,
+      linkedin: '',
+      github: '',
+      level: 1
+    })
+  }
+  
+  };
 
   useEffect(() => {
     fetchTeam();
   }, []);
+
 
   const removeTeamMember = async(id) => {
     setIsLoading(true);
@@ -34,6 +112,8 @@ const TeamManagement = ({
           Expires: "0",
         },
       });
+
+  
       if(response.data.Member) {
         fetchTeam();
       } else {
@@ -63,9 +143,23 @@ const TeamManagement = ({
       setIsLoading(false);
     }
   };
+  const closeNotification = () => {
+    setNotification({ ...notification, visible: false });
+  };
+
 
   return (
     <div className="max-w-2xl mx-auto">
+          {notification.visible && (
+        <div className={`fixed top-0 left-1/2 transform -translate-x-1/2 p-4 mt-4 rounded-md shadow-md ${notification.success ? 'bg-green-200' : 'bg-red-200'}`}>
+          <div className="flex justify-between items-center gap-3">
+            <p className="text-sm text-gray-800">{notification.message}</p>
+            <button onClick={closeNotification} className="text-gray-600 hover:text-gray-800 focus:outline-none">
+              &times; {/* Close button */}
+            </button>
+          </div>
+        </div>
+      )}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle style={{ color: googleColors.blue }}>Add Team Member</CardTitle>

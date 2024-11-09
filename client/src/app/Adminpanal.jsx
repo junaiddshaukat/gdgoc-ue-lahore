@@ -45,28 +45,7 @@ function App() {
     };
   }, []);
 
-  
 
-  const addTeamMember = () => {
-    if (newMember.image) {
-      setTeamMembers([
-        ...teamMembers,
-        {
-          ...newMember,
-          id: Date.now().toString(),
-          image: URL.createObjectURL(newMember.image)
-        }
-      ]);
-      setNewMember({
-        name: '',
-        position: '',
-        image: null,
-        linkedin: '',
-        github: '',
-        level: 1
-      });
-    }
-  };
 
  
 
@@ -119,10 +98,7 @@ function App() {
 
         {activeSection === 'team' && (
           <TeamManagement
-            newMember={newMember}
-            setNewMember={setNewMember}
-         
-            addTeamMember={addTeamMember}
+          
            
             handleDragOver={handleDragOver}
             handleDragLeave={handleDragLeave}
