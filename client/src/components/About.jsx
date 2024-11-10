@@ -4,9 +4,24 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronRight, Code, Users, Lightbulb, Calendar } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import DotPattern from './ui/dot-pattern'
+
 export default function AboutSection() {
   const [activeTab, setActiveTab] = useState(0)
+  const [formData, setFormData] = useState({
+    Regarding: '',
+    message: ''
+  })
+  const [formStatus, setFormStatus] = useState('')
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value
+    })
+  }
 
   const tabs = [
     { icon: <Code className="w-6 h-6" />, title: 'Learn', color: 'bg-blue-500' },
@@ -35,22 +50,22 @@ export default function AboutSection() {
   ]
 
   return (
-    <section className="relative  py-16 bg-white">
-
-      
-          <DotPattern />
+    <section className="relative py-16 bg-white">
+      <DotPattern />
       <div className="container z-50 mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center z-30 mb-12"
-          >
-          <h2 className="text-4xl  z-50 font-bold text-gray-800 mb-4">About GDGoC UE Lahore</h2>
-          <p className="text-xl  z-50 text-gray-600 max-w-2xl mx-auto">
+        >
+          <h2 className="text-4xl z-50 font-bold text-gray-800 mb-4">About GDGoC UE Lahore</h2>
+          <p className="text-xl z-50 text-gray-600 max-w-2xl mx-auto">
             Empowering students and developers to learn, connect, and grow with Google technologies.
           </p>
         </motion.div>
+        
+        {/* Tabs Section */}
         <div className="flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -72,7 +87,7 @@ export default function AboutSection() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="bg-white  rounded-lg shadow-lg overflow-hidden"
+              className="bg-white rounded-lg shadow-lg overflow-hidden"
             >
               <div className="flex border-b">
                 {tabs.map((tab, index) => (
@@ -100,6 +115,7 @@ export default function AboutSection() {
                 >
                   <h3 className="text-2xl font-bold text-gray-800">{content[activeTab].title}</h3>
                   <p className="text-gray-600">{content[activeTab].description}</p>
+                  
                   <motion.a
                     href="#"
                     className="inline-flex items-center text-blue-500 hover:text-blue-600 transition-colors duration-300"
@@ -110,38 +126,54 @@ export default function AboutSection() {
                 </motion.div>
               </div>
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-8 bg-white rounded-lg shadow-lg p-6"
-            >
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Why Join GDGOC UE Lahore?</h3>
-              <ul className="space-y-4">
-                {[
-                  'Access to exclusive Google resources and technologies',
-                  'Networking opportunities with industry professionals',
-                  'Hands-on experience through workshops and projects',
-                  'Leadership and personal growth opportunities',
-                ].map((item, index) => (
-                  <motion.li
-                    key={index}
-                    className="flex items-start space-x-2"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 * index }}
-                  >
-                    <svg className="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-gray-600">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
           </div>
         </div>
+
+        {/* Contact Form Section */}
+        <motion.div
+          className="mt-12 bg-white rounded-lg shadow-lg p-6"
+        >
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Contact Us</h3>
+          <p className="text-gray-600 mb-6">Have any questions? Feel free to send us a message and we'll get back to you as soon as possible.</p>
+          <form className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-gray-700">Regarding</label>
+              <input
+                type="text"
+                id="Regarding"
+                name="Regarding"
+                value={formData.Regarding}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg shadow-sm"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-gray-700">Your Message</label>
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg shadow-sm"
+                rows="4"
+                required
+              />
+            </div>
+            <div>
+              <Link href={`mailto:zain9175zain@gmail.com?subject=Regarding: ${formData.Regarding}&body=${formData.message}`}>
+                <button
+                  className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+                >
+                  Send Message
+                </button>
+              </Link>
+            </div>
+          </form>
+          {formStatus && (
+            <p className="mt-4 text-center text-gray-600">{formStatus}</p>
+          )}
+        </motion.div>
       </div>
     </section>
   )

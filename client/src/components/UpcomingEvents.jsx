@@ -221,7 +221,7 @@ export default function GDSCSlider() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                      <motion.h3 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-xl sm:text-2xl font-bold mb-2">
+                      <motion.h3 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 10 }} className="text-xl sm:text-2xl font-bold mb-2">
                         {slides[currentIndex].title}
                       </motion.h3>
                       <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="text-sm sm:text-base text-gray-200">

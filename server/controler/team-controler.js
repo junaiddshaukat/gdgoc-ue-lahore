@@ -1,7 +1,11 @@
 import Team_model from "../Models/Team_model.js"
 export const createmember=async(req,res)=>{
     try {
-
+      const { name, position, image, linkedin, github, level } = req.body;
+      if (!name || !position || !image || !linkedin || !github || !level) {
+        res.status(400);
+        throw new Error("Please enter all the information");
+      }
  
        
         const newmember = new Team_model(req.body);

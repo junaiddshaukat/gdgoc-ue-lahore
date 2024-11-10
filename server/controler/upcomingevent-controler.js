@@ -2,7 +2,11 @@ import Upcoming_eventmodel from "../Models/Upcoming_event_model.js";
 export const createevent=async(req,res)=>{
     try {
 
- 
+      const { title, description, image, color, mainpage_url } = req.body;
+      if (!title || !description || !image || !color || !mainpage_url) {
+       return res.status(400).json({ message: "Please enter all the information", errors: error.errors })
+
+      }
        
         const newevent = new Upcoming_eventmodel(req.body);
         
@@ -57,6 +61,26 @@ export const getallevent=async (req, res) => {
       });
     }
   };
+
+
+  export const pastevents = async (req, res) => {
+    try {
+      // Fetch events where type is "upcoming"
+      const events = await Upcoming_eventmodel.find({ type: "past" });
+  
+      res.status(200).json({
+        message: "Upcoming events retrieved successfully",
+        Events: events,
+      });
+    } catch (error) {
+      // Handle any errors during the process
+      console.error("Error fetching events:", error);
+      res.status(500).json({
+        message: "Error fetching events",
+        error: error.message,
+      });
+    }
+  };
   
   export const deletevent = async (req, res) => {
     try {
@@ -79,6 +103,11 @@ export const getallevent=async (req, res) => {
   export const updateevent =async (req, res) => {
     try {
       const { id } = req.params; 
+      const { title, description, image, color, mainpage_url } = req.body;
+  if (!title || !description || !image || !color || !mainpage_url) {
+    res.status(400);
+    throw new Error("Please enter all the information");
+  }
   
       
       const deletedevent = await Upcoming_eventmodel.findOneAndUpdate(
@@ -94,5 +123,26 @@ export const getallevent=async (req, res) => {
       res.status(200).json({ message: "Event Edit successfully", Event: deletedevent });
     } catch (error) {
       res.status(500).json({ message: "Error Edit Event", error });
+    }
+  };
+
+
+  export const getoneevent=async (req, res) => {
+    try {
+      const { id } = req.params; 
+    
+      const event = await Upcoming_eventmodel.findById({_id:id});
+
+      res.status(200).json({
+        message: "events retrieved successfully",
+        Event: event 
+      });
+    } catch (error) {
+      // Handle any errors during the process
+      console.error("Error fetching events:", error);
+      res.status(500).json({
+        message: "Error fetching events",
+        error: error.message
+      });
     }
   };

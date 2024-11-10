@@ -6,6 +6,7 @@ import Team from "../components/Team.jsx";
 import WorkSection from "../components/WorkSection.jsx";
 import Footer from "../components/Footer.jsx";
 import AboutSection from "../components/About.jsx";
+import PastEvents from "../components/Pastevents.jsx";
 
 export default function Home() {
   return (
@@ -18,12 +19,17 @@ export default function Home() {
       <div id="Team">
         <Team />
       </div>
+      <div id="Pasevents">
+        <PastEvents />
+      </div>
       <div id="WorkSection">
         <WorkSection />
       </div>
+      
       <div id="About">
         <AboutSection />
       </div>
+      
       
       <Footer/>
    

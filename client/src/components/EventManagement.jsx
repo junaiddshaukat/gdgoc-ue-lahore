@@ -1,17 +1,15 @@
-'use client'
-
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, ArrowUp, Edit2, X } from 'lucide-react';
+import { Plus, Trash2, ArrowUp, Edit2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "./firebase"; // Adjust this import path as needed
+import { storage } from "./firebase";
 import axios from 'axios';
 
-export default function UpcomingEvents({
+export default function EventManagement({
   handleDragOver,
   handleDragLeave,
   handleDrop,
@@ -32,11 +30,12 @@ export default function UpcomingEvents({
     type: "upcoming",
     Gallery_Images: []
   });
-  const [events, setEvents] = useState({ upcoming: [], past: [] });
+  const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ visible: false, message: '', success: false });
   const [isEdit, setIsEdit] = useState(false);
   const [files, setFiles] = useState([]);
+  const [eventid, seteventid] = useState("");
   const [uploadImageBtn, setUploadImageBtn] = useState("UPLOAD");
 
   const uploadImageToFirebase = async (file) => {
@@ -98,11 +97,7 @@ export default function UpcomingEvents({
           Expires: "0",
         },
       });
-      const allEvents = response.data.Events;
-      setEvents({
-        upcoming: allEvents.filter(event => event.type === "upcoming"),
-        past: allEvents.filter(event => event.type === "past")
-      });
+      setEvents(response.data.Events);
     } catch (error) {
       console.error("Error fetching events:", error);
     } finally {
@@ -151,22 +146,29 @@ export default function UpcomingEvents({
       setNotification({ visible: true, message: 'Something went wrong', success: false });
     }
   };
+  const updateEvent  = async () => {
+  
+    try {
+      const response = await axios.put(`http://localhost:3001/upcomingevent/updateevent/${eventid}`, newEvent);
+      setNotification({ visible: true, message: 'Event update successfully', success: true });
+      await fetchEvents();
+      setNewEvent({
+        title: '',
+        description: '',
+        image: '',
+        color: googleColors?.blue || '#4285F4',
+        mainpage_url: '',
+        type: "upcoming",
+        Gallery_Images: []
+      });
+    } catch (error) {
+      console.error("Error Updating Event:", error);
+      setNotification({ visible: true, message: 'Something went wrong', success: false });
+    }
+  };
 
   const closeNotification = () => {
     setNotification({ ...notification, visible: false });
-  };
-
-  const cancelEdit = () => {
-    setIsEdit(false);
-    setNewEvent({
-      title: '',
-      description: '',
-      image: '',
-      color: googleColors?.blue || '#4285F4',
-      mainpage_url: '',
-      type: "upcoming",
-      Gallery_Images: []
-    });
   };
 
   return (
@@ -182,18 +184,8 @@ export default function UpcomingEvents({
         </div>
       )}
       <Card className="mb-8">
-        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-          <CardTitle style={{ color: googleColors?.green || '#34A853' }}>{isEdit ? 'Edit Event' : 'Add Event'}</CardTitle>
-          {isEdit && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={cancelEdit}
-              className="h-8 w-8 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+        <CardHeader>
+          <CardTitle style={{ color: googleColors?.green || '#34A853' }}>Add Event</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -304,19 +296,31 @@ export default function UpcomingEvents({
                 ))}
               </div>
             )}
-            <Button
+            
+           {
+            isEdit ? (
+              <Button
+              onClick={updateEvent}
+              style={{ backgroundColor: googleColors?.green || '#34A853', color: 'white' }}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Update Event
+            </Button>
+            ):(
+              <Button
               onClick={addEvent}
               style={{ backgroundColor: googleColors?.green || '#34A853', color: 'white' }}
             >
-              <Plus className="mr-2 h-4 w-4" /> {isEdit ? 'Update Event' : 'Add Event'}
+              <Plus className="mr-2 h-4 w-4" /> Add Event
             </Button>
+            )
+           }
           </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle style={{ color: googleColors?.green || '#34A853' }}>Upcoming Events</CardTitle>
+          <CardTitle style={{ color: googleColors?.green || '#34A853' }}>Events</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -337,7 +341,7 @@ export default function UpcomingEvents({
             </div>
           ) : (
             <div className="space-y-4">
-              {events.upcoming.map((event) => (
+              {events.map((event) => (
                 <div
                   key={event._id}
                   className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
@@ -367,76 +371,22 @@ export default function UpcomingEvents({
                       variant="destructive"
                       size="sm"
                       onClick={() => {
-                        setIsEdit(true);
-                        setNewEvent(event);
-                      }}
-                      style={{ backgroundColor: googleColors?.green || '#34A853' }}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle style={{ color: googleColors?.green || '#34A853' }}>Past Events</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center items-center h-32">
-              <div className="relative w-16 h-16">
-                {[googleColors?.red || '#EA4335', googleColors?.blue || '#4285F4', googleColors?.yellow || '#FBBC05', googleColors?.green || '#34A853'].map((color, index) => (
-                  <div
-                    key={color}
-                    className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-t-4 border-solid animate-spin"
-                    style={{
-                      borderColor: `${color} transparent transparent transparent`,
-                      animationDuration: '1.2s',
-                      animationDelay: `${index * 0.1}s`,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {events.past.map((event) => (
-                <div
-                  key={event._id}
-                  className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
-                  style={{ borderLeft: `4px solid ${event.color}` }}
-                >
-                  <div className="flex items-center space-x-4">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <h3 className="font-semibold">{event.title}</h3>
-                      <p className="text-sm text-gray-600">{event.description}</p>
-                    </div>
-                  </div>
-                  <div className='flex gap-2'>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeEvent(event._id)}
-                      style={{ backgroundColor: googleColors?.red || '#EA4335' }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setIsEdit(true);
-                        setNewEvent(event);
+                        setIsEdit(!isEdit);
+                        if (!isEdit) {
+                          setNewEvent(event);
+                          seteventid(event._id)
+                        }
+                        else{
+                           setNewEvent({
+        title: '',
+        description: '',
+        image: '',
+        color: googleColors?.blue || '#4285F4',
+        mainpage_url: '',
+        type: "upcoming",
+        Gallery_Images: []
+      });
+                        }
                       }}
                       style={{ backgroundColor: googleColors?.green || '#34A853' }}
                     >
