@@ -52,7 +52,7 @@ export default function AboutSection() {
     },
     {
       title: 'Attend Exciting Events',
-      description: 'Participate in hackathons, conferences, and meetups to showcase your skills and learn from industry experts.',
+      description: 'Participate in hackathons, conferences, coding competitions and meetups to showcase your skills and learn from industry experts.',
     },
   ]
 
